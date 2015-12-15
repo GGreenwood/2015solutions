@@ -24,12 +24,13 @@ function Operation(func, re) {
         this.cache = null;
 
         this.exec = function(expressions) {
-            // Evaluate whether the operand is a constant or another net
+            // Load value from cache if available
             if(!this.cache) {
-                console.log("Evaluating net %s", this.next);
+                // Evaluate whether the operand is a constant or another net
                 var a = re_constant.exec(this.a) ? this.a : expressions[this.a];
                 var b = re_constant.exec(this.b) ? this.b : expressions[this.b];
                 this.cache = func(a.exec(expressions), b.exec(expressions));
+                console.log("Evaluated net %s == %d", this.next, this.cache);
             } 
             return this.cache;
         };
@@ -104,8 +105,6 @@ fs.readFile(process.argv[2], 'utf8', function(err, data) {
     for(var con in connections) {
         connections[con].cache = null;
     }
-
-    console.log(connections);
 
     console.log(connections['a'].exec(connections));
 });
